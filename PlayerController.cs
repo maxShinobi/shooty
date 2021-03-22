@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
 
     public Transform camTrans;
 
+    public float maxViewAngle = 60f;
+
     public float mouseSensitivity;
     public bool invertX;
     public bool invertY;
@@ -109,6 +111,14 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x, transform.rotation.eulerAngles.z);
 
             camTrans.rotation = Quaternion.Euler(camTrans.rotation.eulerAngles + new Vector3(-mouseInput.y, 0f, 0f));
+
+            if (camTrans.rotation.eulerAngles.x > maxViewAngle && camTrans.rotation.eulerAngles.x < 180f)
+            {
+                camTrans.rotation = Quaternion.Euler(maxViewAngle, camTrans.rotation.eulerAngles.y, camTrans.rotation.eulerAngles.z);
+            } else if (camTrans.rotation.eulerAngles.x > 180 && camTrans.rotation.eulerAngles.x < 360f - maxViewAngle)
+            {
+                camTrans.rotation = Quaternion.Euler(-maxViewAngle, camTrans.rotation.eulerAngles.y, camTrans.rotation.eulerAngles.z);
+            }
            
             anim.SetFloat("moveSpeed", moveInput.magnitude);
 
