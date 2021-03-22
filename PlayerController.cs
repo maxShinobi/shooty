@@ -25,8 +25,6 @@ public class PlayerController : MonoBehaviour
 
     public Animator anim;
 
-    public AudioSource footstepFast, footstepSlow;
-
     private void Awake()
     {
         instance = this;

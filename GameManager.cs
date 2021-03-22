@@ -56,8 +56,7 @@ public class GameManager : MonoBehaviour
 
             Time.timeScale = 1f;
 
-            PlayerController.instance.footstepFast.Play();
-            PlayerController.instance.footstepSlow.Play();
+            GameObject.FindWithTag("Player").GetComponent<AudioSource>().mute = false;
         } else
         {
             UIController.instance.pauseScreen.SetActive(true);
@@ -66,8 +65,7 @@ public class GameManager : MonoBehaviour
 
             Time.timeScale = 0f;
 
-            PlayerController.instance.footstepFast.Stop();
-            PlayerController.instance.footstepSlow.Stop();
+            GameObject.FindWithTag("Player").GetComponent<AudioSource>().mute = true;
         }
     }
 }
