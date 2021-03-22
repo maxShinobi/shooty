@@ -16,7 +16,6 @@ public class Turret : MonoBehaviour
     void Start()
     {
         shotCounter = timeBetweenShots;
-        Debug.Log(transform.rotation + " current position");
     }
 
     // Update is called once per frame
@@ -25,7 +24,6 @@ public class Turret : MonoBehaviour
         if(Vector3.Distance(transform.position, PlayerController.instance.transform.position) < rangeToTargetPlayer)
         {
             transform.LookAt(PlayerController.instance.transform.position + new Vector3(0f, 1.2f, 0f));
-            Debug.Log(transform.rotation + " current position");
 
             shotCounter -= Time.deltaTime;
 
