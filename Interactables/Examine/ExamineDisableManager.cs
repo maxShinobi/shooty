@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityStandardAssets.Characters.FirstPerson;
 using UnityStandardAssets.ImageEffects;
+using VHS;
 
 namespace ExamineSystem
 {
@@ -10,9 +10,8 @@ namespace ExamineSystem
         public static ExamineDisableManager instance;
 
         [SerializeField] private Image crosshair = null;
-        [SerializeField] private FirstPersonController player;
         [SerializeField] private ExamineRaycast raycastManager = null;
-        [SerializeField] private BlurOptimized blur = null;
+        //[SerializeField] private BlurOptimized blur = null;
 
         void Awake()
         {
@@ -22,24 +21,13 @@ namespace ExamineSystem
 
         public void DisablePlayer(bool disable)
         {
-            if (disable)
-            {
-                raycastManager.enabled = false;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                blur.enabled = true;
-                crosshair.enabled = false;
-                player.enabled = false;
-            }
-            else
-            {
-                raycastManager.enabled = true;
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                blur.enabled = false;
-                crosshair.enabled = true;
-                player.enabled = true;
-            }
+                raycastManager.enabled = !disable;
+                Cursor.lockState = disable? CursorLockMode.None :CursorLockMode.Locked;
+                Cursor.visible = disable;
+                //blur.enabled = disable;
+                crosshair.enabled = !disable;
+                FirstPersonController.instance.DisableFPC(!disable);
+            
         }
     }
 }
