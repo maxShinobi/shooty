@@ -6,7 +6,7 @@ using VHS;
 
 public class InteractionSystem : MonoBehaviour
 {
-    [SerializeField] private Camera camera = null;
+    [SerializeField] private new Camera camera = null;
     [SerializeField] RectTransform pickupImage = null;
     [SerializeField] private Image crosshair = null;
 
