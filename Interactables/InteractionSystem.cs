@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using VHS;
 
 public class InteractionSystem : MonoBehaviour
 {
-    [SerializeField] private Camera camera;
-    [SerializeField] private LayerMask layerMask;
-    [SerializeField] RectTransform pickupImage;
-    [SerializeField] private Image crosshair;
+    [SerializeField] private Camera camera = null;
+    [SerializeField] RectTransform pickupImage = null;
+    [SerializeField] private Image crosshair = null;
+
+    public LayerMask layerMask;
 
     private Item itemBeingPickedUp;
-    [SerializeField] private CharacterController firstPersonController;
+    [SerializeField] private CharacterController firstPersonController = null;
     private 
 
     void Update()

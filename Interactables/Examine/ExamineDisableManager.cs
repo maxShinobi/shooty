@@ -11,7 +11,7 @@ namespace ExamineSystem
 
         [SerializeField] private Image crosshair = null;
         [SerializeField] private ExamineRaycast raycastManager = null;
-        //[SerializeField] private BlurOptimized blur = null;
+        [SerializeField] private BlurOptimized blur = null;
 
         void Awake()
         {
@@ -24,10 +24,9 @@ namespace ExamineSystem
                 raycastManager.enabled = !disable;
                 Cursor.lockState = disable? CursorLockMode.None :CursorLockMode.Locked;
                 Cursor.visible = disable;
-                //blur.enabled = disable;
+                blur.enabled = disable;
                 crosshair.enabled = !disable;
                 FirstPersonController.instance.DisableFPC(!disable);
-            
         }
     }
 }

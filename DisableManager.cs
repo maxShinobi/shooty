@@ -8,8 +8,8 @@ namespace interactSystem
     {
         public static DisableManager instance;
 
-        [SerializeField] private FirstPersonController player;
-        [SerializeField] private Image crosshair; 
+        [SerializeField] private FirstPersonController player = null;
+        [SerializeField] private Image crosshair = null; 
 
         void Awake()
         {
