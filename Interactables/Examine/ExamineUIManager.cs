@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace ExamineSystem
-{
     public class ExamineUIManager : MonoBehaviour
     {
         [HideInInspector] public ExamineItemController examineController;
@@ -18,5 +16,4 @@ namespace ExamineSystem
         {
             examineController.StopInteractingObject();
         }
-        }
-    }
+}

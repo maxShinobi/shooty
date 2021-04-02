@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace ExamineSystem
-{
     public class ExamineRaycast : MonoBehaviour
     {
         [Header("Raycast Features")]
@@ -70,4 +68,3 @@ namespace ExamineSystem
             }
         }
     }
-}

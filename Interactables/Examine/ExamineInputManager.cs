@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 
-namespace ExamineSystem
-{
     public class ExamineInputManager : MonoBehaviour
     {
         [Header("Raycast Pickup Input")]
@@ -19,4 +17,3 @@ namespace ExamineSystem
             else { instance = this; DontDestroyOnLoad(gameObject); }
         }
     }
-}

@@ -2,8 +2,6 @@
 using UnityEngine.UI;
 using UnityStandardAssets.ImageEffects;
 
-namespace ExamineSystem
-{
     public class ExamineDisableManager : MonoBehaviour
     {
         public static ExamineDisableManager instance;
@@ -28,4 +26,3 @@ namespace ExamineSystem
                 FirstPersonController.instance.DisableFPC(!disable);
         }
     }
-}

@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 
-namespace ExamineSystem
-{
     public class ExamineItemController : MonoBehaviour
     {
         [Header("Camera Options")]
@@ -154,4 +152,3 @@ namespace ExamineSystem
             Destroy(thisMat);
         }
     }
-}
