@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CameraControllerr : MonoBehaviour
 {
     public static CameraController instance;
 
@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        //instance = this;
     }
     // Update is called once per frame
     void LateUpdate()

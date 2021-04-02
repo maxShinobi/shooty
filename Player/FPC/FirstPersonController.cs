@@ -1,10 +1,9 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityStandardAssets.Characters.FirstPerson;
-using ExamineSystem;
 
-namespace VHS
-{
+
+
     [RequireComponent(typeof(CharacterController))]
     public class FirstPersonController : MonoBehaviour
     {
@@ -75,11 +74,10 @@ namespace VHS
                 #region Components / Custom Classes / Caches
 
 
-                    private FirstPersonController fpc;
-                    private CharacterController m_characterController;
+                    [SerializeField] private CharacterController m_characterController;
                     private Transform m_yawTransform;
                     private Transform m_camTransform;
-                    private CameraController m_cameraController;
+                    [SerializeField] private CameraController m_cameraController;
                     
                     private RaycastHit m_hitInfo;
                     private IEnumerator m_CrouchRoutine;
@@ -126,7 +124,6 @@ namespace VHS
         #region BuiltIn Methods     
             protected virtual void Start()
             {
-                fpc = GameObject.FindObjectOfType<FirstPersonController>();
                 GetComponents();
                 InitVariables();
             }
@@ -381,7 +378,7 @@ namespace VHS
 
                 protected virtual void HandleCameraSway()
                 {
-                    m_cameraController.HandleSway(m_smoothInputVector,movementInputData.InputVector.x);
+                   // m_cameraController.HandleSway(m_smoothInputVector,movementInputData.InputVector.x);
                 }
 
                 protected virtual void HandleRunFOV()
@@ -457,4 +454,3 @@ namespace VHS
             #endregion
         #endregion
     }
-}

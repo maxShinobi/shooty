@@ -1,14 +1,13 @@
 using UnityEngine;
 using NaughtyAttributes;
 
-namespace VHS
-{    
+
     public class InputHandler : MonoBehaviour
     {
         #region Data
             [Space,Header("Input Data")]
-            [SerializeField] private CameraInputData cameraInputData = null;
-            [SerializeField] private MovementInputData movementInputData = null;
+            public CameraInputData cameraInputData;
+            public MovementInputData movementInputData;
         #endregion
 
         #region BuiltIn Methods
@@ -54,4 +53,3 @@ namespace VHS
             }
         #endregion
     }
-}

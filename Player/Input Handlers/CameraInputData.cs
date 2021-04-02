@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VHS
-{
+
     
     [CreateAssetMenu(fileName = "CameraInputData", menuName = "FirstPersonController/Data/CameraInputData", order = 0)]
     public class CameraInputData : ScriptableObject
@@ -54,4 +53,3 @@ namespace VHS
             }
         #endregion
     }
-}

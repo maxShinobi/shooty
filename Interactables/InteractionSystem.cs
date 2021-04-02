@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
-using VHS;
 
 public class InteractionSystem : MonoBehaviour
 {

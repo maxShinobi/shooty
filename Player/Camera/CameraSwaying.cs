@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
-using NaughtyAttributes;
 
-namespace VHS
-{    
-    [System.Serializable]
+
     public class CameraSwaying
     {
         #region Variables
@@ -74,4 +71,3 @@ namespace VHS
             }
         #endregion
     }
-}

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VHS
-{    
+  
     [CreateAssetMenu(fileName = "MovementInputData", menuName = "FirstPersonController/Data/MovementInputData", order = 1)]
     public class MovementInputData : ScriptableObject
     {
@@ -83,4 +82,3 @@ namespace VHS
             }
         #endregion
     }
-}

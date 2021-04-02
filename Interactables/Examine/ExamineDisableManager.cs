@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityStandardAssets.ImageEffects;
-using VHS;
 
 namespace ExamineSystem
 {

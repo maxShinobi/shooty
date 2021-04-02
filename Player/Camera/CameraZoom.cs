@@ -1,9 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace VHS
-{    
-    [System.Serializable]
+
     public class CameraZoom
     {
         #region Variables
@@ -126,4 +124,3 @@ namespace VHS
             }
         #endregion
     }
-}
