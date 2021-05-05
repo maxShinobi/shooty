@@ -27,7 +27,7 @@ public class ObjectActivator : MonoBehaviour
 
         if(image.enabled == true)
         {
-            transform.LookAt(Player.transform.position + new Vector3(0f, 1.2f, 0f));
+            transform.LookAt(Player.transform.position);
         }
     }
 }
