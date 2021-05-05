@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityStandardAssets.Characters.FirstPerson;
 using UnityStandardAssets.ImageEffects;
 
     public class ExamineDisableManager : MonoBehaviour
@@ -7,6 +8,7 @@ using UnityStandardAssets.ImageEffects;
         public static ExamineDisableManager instance;
 
         [SerializeField] private Image crosshair = null;
+        [SerializeField] private FirstPersonController player = null;
         [SerializeField] private ExamineRaycast raycastManager = null;
         [SerializeField] private BlurOptimized blur = null;
 

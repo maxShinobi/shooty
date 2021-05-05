@@ -2,6 +2,9 @@
 
     public class ExamineItemController : MonoBehaviour
     {
+
+        public MonoBehaviour CameraController;
+        public MonoBehaviour FirstPersonController;
         [Header("Camera Options")]
         [SerializeField] private Camera mainCamera = null;
         [SerializeField] private Transform examinePoint = null;
@@ -86,8 +89,10 @@
             gameObject.layer = LayerMask.NameToLayer(interact);
             transform.position = originalPosition;
             transform.rotation = originalRotation;
-            ExamineDisableManager.instance.DisablePlayer(false);
+            FirstPersonController.enabled = true;
+            CameraController.enabled = true;
             canRotate = false;
+            
         }
 
         public void ExamineObject()
@@ -100,7 +105,8 @@
             mainCamera.transform.rotation * Vector3.up);
             transform.Rotate(initialRotationOffset);
 
-            ExamineDisableManager.instance.DisablePlayer(true);
+            FirstPersonController.enabled = false;
+            CameraController.enabled = false;
 
             gameObject.layer = LayerMask.NameToLayer(examineLayer);
             thisMat.DisableKeyword(emissive);
@@ -114,16 +120,16 @@
                 float h = horizontalSpeed * Input.GetAxis(mouseX);
                 float v = verticalSpeed * Input.GetAxis(mouseY);
 
-                if (Input.GetKey(ExamineInputManager.instance.rotateKey))
-                {
-                    gameObject.transform.Rotate(v, h, 0);
-                }
+                // if (Input.GetKey("Fire1"))
+                // {
+                //     gameObject.transform.Rotate(v, h, 0);
+                // }
 
-                else if (Input.GetKeyDown(ExamineInputManager.instance.dropKey))
-                {
-                    StopInteractingObject();
-                    raycastManager.interacting = false;
-                }
+                // else if (Input.GetKeyDown("Fire1"))
+                // {
+                //     StopInteractingObject();
+                //     raycastManager.interacting = false;
+                // }
 
                 //Handle zooming
                 bool zoomAdjusted = false;

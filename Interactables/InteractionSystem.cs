@@ -7,9 +7,7 @@ using UnityStandardAssets.ImageEffects;
 public class InteractionSystem : MonoBehaviour
 {
     [SerializeField] private new Camera camera = null;
-    [SerializeField] RectTransform pickupImage = null;
     [SerializeField] private Image crosshair = null;
-    [SerializeField] private GameObject interactCanvas = null;
     [SerializeField] private GameObject cameraHolder = null;
 
     public LayerMask layerMask;
@@ -54,14 +52,12 @@ public class InteractionSystem : MonoBehaviour
             } else if(hitItem !=null && hitItem != itemBeingPickedUp)
             {
                 itemBeingPickedUp = hitItem;
-                pickupImage.gameObject.SetActive(true);
                 crosshair.color = Color.red;
             }
         }
         else
         {
             itemBeingPickedUp = null;
-            pickupImage.gameObject.SetActive(false);
             crosshair.color = Color.white;
         }
     }
@@ -71,7 +67,6 @@ public class InteractionSystem : MonoBehaviour
         firstPersonController.enabled = false;
         Cursor.visible = true;
         crosshair.enabled = false;
-        interactCanvas.SetActive(false);
         cameraHolder.GetComponent<CameraController>().enabled = false;
     }
 }

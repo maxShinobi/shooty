@@ -37,7 +37,7 @@ using UnityEngine.UI;
                     isCrosshairActive = true;
                     interacting = true;
 
-                    if (Input.GetKeyDown(ExamineInputManager.instance.interactKey))
+                    if (Input.GetButton("Fire1"))
                     {
                         raycastedObj.ExamineObject();
                     }
