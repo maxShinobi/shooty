@@ -41,12 +41,10 @@ public class UltimateExamineSystem : MonoBehaviour
     Rigidbody[] rigidbodies; //stores rigid bodies of the examined item
     GameObject placeHolder;
     Vector3 zoomMinMax;
-    bool hasInterestPoints;
     Light examineLight = null;
     Image cursorDot;
     Canvas detectCanvas;
     Canvas ExamineCanvas;
-
     void Start()
     {
         cam = GetComponentInChildren<Camera>().transform;
@@ -55,7 +53,7 @@ public class UltimateExamineSystem : MonoBehaviour
         examineLight = cam.GetComponentInChildren<Light>();
 
         //Initialize UI variables
-        cursorDot = GameObject.Find("UESCursorDot").GetComponent<Image>();
+        cursorDot = GameObject.Find("crosshair").GetComponent<Image>();
         detectCanvas = GameObject.Find("UESDetectCanvas").GetComponent<Canvas>();
         ExamineCanvas = GameObject.Find("UESExamineCanvas").GetComponent<Canvas>();
         cursorDotDefaultColor = cursorDot.color;
@@ -63,19 +61,6 @@ public class UltimateExamineSystem : MonoBehaviour
 
     void Update()
     {
-        /*if (ExamineState) //do this when entering examine state
-        {
-            Debug.Log("test1");
-            playerMovementScript.enabled = false;
-            cameraControllerScript.enabled = false;
-            LockCursor(false);
-        }
-        else { //do this when exiting examine state
-            playerMovementScript.enabled = true;
-            cameraControllerScript.enabled = true;
-            LockCursor(true);
-        }*/
-
         if (Input.GetKeyDown(KeyCode.E) && DetectionState && !ExamineState) //do this when entering examine state
         {
             ExamineStateEnter();
@@ -139,11 +124,28 @@ public class UltimateExamineSystem : MonoBehaviour
         zoomDistance = defaultZoomDistance;
         cam.GetComponent<PostProcessVolume>().enabled = true;
 
+        ItemInfo itemInfo = detectedItem.GetComponent<ItemInfo>(); //sore iteminfo object reference
+
+        //disable detected item's colliders, reveal and remember interest points if there are any
+        itemInfo.DisableColliders();
+
+        //Override default zoom limits if there are any
+        Vector2 OverrideLimits = itemInfo.GetZoomLimits();
+        if (OverrideLimits != Vector2.zero)
+        {
+            zoomMinMax = OverrideLimits;
+        }
+        else
+        {
+            zoomMinMax = zoomMinMaxDefault;
+        }
+
         //enable examine canvas and set info text
         ExamineCanvas.enabled = true;
 
-        if (audioSource && !audioSource.isPlaying) //plays a sound clip if audiosource and audio clip are assigned and nothing is already playing
+        if (itemInfo.GetAudioInfo() && audioSource && !audioSource.isPlaying) //plays a sound clip if audiosource and audio clip are assigned and nothing is already playing
         {
+            audioSource.PlayOneShot(itemInfo.GetAudioInfo());
         }
 
         if(examineLight && lightEnabled) examineLight.enabled = true; //turns on the light
@@ -194,6 +196,7 @@ public class UltimateExamineSystem : MonoBehaviour
 
         //disable post processing volume(depth of field), re-enable colliders
         cam.GetComponent<PostProcessVolume>().enabled = false;
+        detectedItem.GetComponent<ItemInfo>().EnableColliders();
 
         //re-enable camera, player movement and lock the cursor
         playerMovementScript.enabled = true;
@@ -209,7 +212,7 @@ public class UltimateExamineSystem : MonoBehaviour
         Destroy(placeHolder);
     }
 
-    
+
     void DetectItem() { //look for examinable items
         RaycastHit hit;
 
@@ -233,7 +236,6 @@ public class UltimateExamineSystem : MonoBehaviour
 
             cursorDot.color = cursorDotHighlighted; //set cursor highlight color
             detectCanvas.enabled = true;
-
         }
         else if(detectionStateChange){ //disable UI, set normal cursor color
             cursorDot.color = cursorDotDefaultColor;
