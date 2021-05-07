@@ -4,47 +4,38 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
-public class UltimateExamineSystem : MonoBehaviour
+public class ExamineSystem : MonoBehaviour
 {
-    [Header("GENERAL")]
-    public float detectableDistance = 5.0f; //max. distance for item detection
-    public MonoBehaviour playerMovementScript; //script used for player movement
-    public MonoBehaviour cameraControllerScript; //script used for camera movement
-    [SerializeField] PostProcessVolume _volume = null;
-    [SerializeField] AudioSource audioSource = null;
-    public bool lightEnabled = false; //liight will be used (true), light wont be used (false)
+    public float detectableDistance = 5.0f;
+    public MonoBehaviour playerMovementScript;
+    public MonoBehaviour cameraControllerScript;
+    [SerializeField] PostProcessVolume _volume;
+    [SerializeField] AudioSource audioSource;
+    public bool lightEnabled = false;
 
-    [Space(10)]
-    [Header("UI")]
-    [SerializeField] Canvas yourCanvas = null; //You canvas which will be disabled/enabled when needed
     [SerializeField] Color cursorDotHighlighted = Color.red;
 
-    [Space(10)]
-    [Header("EXAMINE SETTINGS")]
-    [SerializeField] float zoomSmoothness = 15f; //controls how smooth the zoom is
-    public float rotationSpeed = 15; //controlls examine rotation speed
-    public float zoomSpeed = 1.5f; //controls zoom speed
+    [SerializeField] float zoomSmoothness = 15f;
+    public float rotationSpeed = 15;
+    public float zoomSpeed = 1.5f;
     public float defaultZoomDistance = 1; //distance from the camera, to which objects will initially go to when picked up
+    float collisionCheckDistance = 0.4f;
+    float zoomDistance; //stores dynamic zoom distance which changes due to player input (mouse scrolling)
     public Vector2 zoomMinMaxDefault = new Vector2(0.9f, 2.0f); //minimum and maximum zoom distance from defaultZoomDistance. (for zooming)
 
     [HideInInspector]  public bool examineState = false; //can be used to check if an item is being examined
-    float collisionCheckDistance = 0.4f; //distance used to check to disnctance - feel free to change
-    Transform detectedItem; //stores item which is being examined
-    Transform cam;
+
+    Transform detectedItem, cam;
     LayerMask layerMask;
     Color cursorDotDefaultColor;
     bool detectionState = false;
     bool detectionStateChange = false;
-    Vector3 initialItemPosition; //position item was in when picked up
-    Vector3 initialItemRotation; //rotation item was in when picked up
-    float zoomDistance; //stores dynamic zoom distance which changes due to player input (mouse scrolling)
+    Vector3 initialItemPosition, initialItemRotation, zoomMinMax;
     Rigidbody[] rigidbodies; //stores rigid bodies of the examined item
     GameObject placeHolder;
-    Vector3 zoomMinMax;
     Light examineLight = null;
     Image cursorDot;
-    Canvas detectCanvas;
-    Canvas ExamineCanvas;
+    Canvas detectCanvas, ExamineCanvas;
     void Start()
     {
         cam = GetComponentInChildren<Camera>().transform;
@@ -52,33 +43,32 @@ public class UltimateExamineSystem : MonoBehaviour
         zoomMinMax = zoomMinMaxDefault;
         examineLight = cam.GetComponentInChildren<Light>();
 
-        //Initialize UI variables
         cursorDot = GameObject.Find("crosshair").GetComponent<Image>();
-        detectCanvas = GameObject.Find("UESDetectCanvas").GetComponent<Canvas>();
-        ExamineCanvas = GameObject.Find("UESExamineCanvas").GetComponent<Canvas>();
+        detectCanvas = GameObject.Find("ESDetectCanvas").GetComponent<Canvas>();
+        ExamineCanvas = GameObject.Find("ESExamineCanvas").GetComponent<Canvas>();
         cursorDotDefaultColor = cursorDot.color;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && DetectionState && !ExamineState) //do this when entering examine state
+        if (Input.GetKeyDown(KeyCode.E) && DetectionState && !ExamineState)
         {
             ExamineStateEnter();
         }
-        else if(!ExamineState) //do this when NOT examining an item
+        else if(!ExamineState)
         {
             DetectItem(); //look for examinable items
         }
-        else Examine(); //start examining
+        else Examine();
     }
 
     void Examine() {
-        if (Input.GetKeyDown(KeyCode.E)) //Stop examining
+        if (Input.GetKeyDown(KeyCode.E))
         {
             ExamineStateLeave();
         }
         else {
-            if (Input.GetKey(KeyCode.Mouse1)) //rotate the object if input detected
+            if (Input.GetKey(KeyCode.Mouse1))
             {
                 float rotX = Input.GetAxis("Mouse X") * rotationSpeed;
                 float rotY = Input.GetAxis("Mouse Y") * rotationSpeed;
@@ -109,24 +99,21 @@ public class UltimateExamineSystem : MonoBehaviour
         }
     }
 
-    void ExamineStateEnter() { //do this when entering examine state
+    void ExamineStateEnter() {
 
         ExamineState = true;
 
-        //disable player and camera movement and unlock the cursor
         playerMovementScript.enabled = false;
         cameraControllerScript.enabled = false;
         LockCursor(false);
 
-        //sore initial position and rotation, set zoomDistance to default one, enable post processing volume (Depth of field)
         initialItemPosition = detectedItem.position;
         initialItemRotation = new Vector3(detectedItem.eulerAngles.x, detectedItem.eulerAngles.y, detectedItem.eulerAngles.z);
         zoomDistance = defaultZoomDistance;
         cam.GetComponent<PostProcessVolume>().enabled = true;
 
-        ItemInfo itemInfo = detectedItem.GetComponent<ItemInfo>(); //sore iteminfo object reference
+        ItemInfo itemInfo = detectedItem.GetComponent<ItemInfo>();
 
-        //disable detected item's colliders, reveal and remember interest points if there are any
         itemInfo.DisableColliders();
 
         //Override default zoom limits if there are any
@@ -140,18 +127,17 @@ public class UltimateExamineSystem : MonoBehaviour
             zoomMinMax = zoomMinMaxDefault;
         }
 
-        //enable examine canvas and set info text
         ExamineCanvas.enabled = true;
 
-        if (itemInfo.GetAudioInfo() && audioSource && !audioSource.isPlaying) //plays a sound clip if audiosource and audio clip are assigned and nothing is already playing
+        if (itemInfo.GetAudioInfo())
         {
             audioSource.PlayOneShot(itemInfo.GetAudioInfo());
         }
 
-        if(examineLight && lightEnabled) examineLight.enabled = true; //turns on the light
+        if(examineLight && lightEnabled) examineLight.enabled = true;
 
-        rigidbodies = detectedItem.GetComponentsInChildren<Rigidbody>(); //Find rigid bodies in the item
-        foreach (Rigidbody rb in rigidbodies) { //disable rigidbodies
+        rigidbodies = detectedItem.GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody rb in rigidbodies) {
             rb.isKinematic = true;
         }
 
@@ -183,29 +169,25 @@ public class UltimateExamineSystem : MonoBehaviour
         }
     }
 
-    void ExamineStateLeave() { //do this when leaving examine state
+    void ExamineStateLeave() {
 
         ExamineState = false;
 
-        //reset position and rotation
         detectedItem.position = initialItemPosition;
         detectedItem.eulerAngles = initialItemRotation;
 
-        //disable canvases used for examining
         ExamineCanvas.enabled = false;
 
-        //disable post processing volume(depth of field), re-enable colliders
         cam.GetComponent<PostProcessVolume>().enabled = false;
         detectedItem.GetComponent<ItemInfo>().EnableColliders();
 
-        //re-enable camera, player movement and lock the cursor
         playerMovementScript.enabled = true;
         cameraControllerScript.enabled = true;
         LockCursor(true);
 
-        if(examineLight) examineLight.enabled = false; //turn off the light
+        if(examineLight) examineLight.enabled = false;
 
-        foreach (Rigidbody rb in rigidbodies) //enable rigidbodies
+        foreach (Rigidbody rb in rigidbodies)
         {
             rb.isKinematic = false;
         }
@@ -213,31 +195,31 @@ public class UltimateExamineSystem : MonoBehaviour
     }
 
 
-    void DetectItem() { //look for examinable items
+    void DetectItem() {
         RaycastHit hit;
 
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, detectableDistance, layerMask)) //if examinable item has been hit
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, detectableDistance, layerMask))
         {
-            if (detectionStateChange) HandleDetectionUI(hit.transform.gameObject, true); //enable detection UI (item name...)
+            if (detectionStateChange) HandleDetectionUI(hit.transform.gameObject, true);
             DetectionState = true;
         }
         else
         {
-            if (detectionStateChange) HandleDetectionUI(null, false); //disable detection UI
+            if (detectionStateChange) HandleDetectionUI(null, false);
             DetectionState = false;
         }
     }
 
-    void HandleDetectionUI(GameObject item, bool detected) { //disable/enable detectuin UI
+    void HandleDetectionUI(GameObject item, bool detected) {
 
-        if (detected && detectionStateChange) //if examinable object has been detected
+        if (detected && detectionStateChange)
         {
             detectedItem = item.transform;  //store detected item reference
 
-            cursorDot.color = cursorDotHighlighted; //set cursor highlight color
+            cursorDot.color = cursorDotHighlighted;
             detectCanvas.enabled = true;
         }
-        else if(detectionStateChange){ //disable UI, set normal cursor color
+        else if(detectionStateChange){
             cursorDot.color = cursorDotDefaultColor;
             detectCanvas.enabled = false;
         }
@@ -254,11 +236,11 @@ public class UltimateExamineSystem : MonoBehaviour
                 return;
 
             detectionState = value;
-            if (detectionState) //do this if new bool value equals to true
+            if (detectionState)
             {
                 detectionStateChange = true;
             }
-            else { //do this if new bool value equals to false
+            else {
                 detectionStateChange = false;
             }
         }
@@ -273,23 +255,21 @@ public class UltimateExamineSystem : MonoBehaviour
                 return;
 
             examineState = value; 
-            if (examineState) //do this if new bool value equals to true (enables Ui elements which we dont want in examine state)
+            if (examineState)
             {
                 cursorDot.enabled = false;
                 detectCanvas.enabled = false;
-                if(yourCanvas) yourCanvas.enabled = false;
             }
-            else //do this if new bool value equals to false (enables Ui elements which were disabled)
+            else
             {
                 cursorDot.enabled = true;
                 detectCanvas.enabled = true;
-                if (yourCanvas) yourCanvas.enabled = true;
             }
         }
     }
 
 
-    public void LockCursor(bool locked) { //lock, hide / unlock, show cursor
+    public void LockCursor(bool locked) {
         if (locked)
         {
             Cursor.lockState = CursorLockMode.Locked;

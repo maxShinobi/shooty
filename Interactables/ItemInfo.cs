@@ -6,17 +6,12 @@ public class ItemInfo : MonoBehaviour
 {
     [SerializeField] AudioClip audioInfo = null;
     [SerializeField] Vector2 zoomMinMaxOverride = new Vector2(0, 0); //leave at (0,0) if you want default values to apply
-    public GameObject[] interestPoints = null; //array of interest points
 
     Collider[] colliders;
 
     private void Start()
     {
         colliders = GetComponents<Collider>();
-        foreach(GameObject interestPoint in interestPoints)
-        {
-            interestPoint.SetActive(false);
-        }
     }
 
     public AudioClip GetAudioInfo() {

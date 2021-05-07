@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
-using UnityStandardAssets.ImageEffects;
 
 public class InteractionSystem : MonoBehaviour
 {
