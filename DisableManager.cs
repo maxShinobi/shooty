@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityStandardAssets.Characters.FirstPerson;
+//using UnityStandardAssets.Characters.FirstPerson;
 using UnityEngine.UI;
 
 namespace interactSystem

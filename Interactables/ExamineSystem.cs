@@ -9,7 +9,9 @@ public class ExamineSystem : MonoBehaviour
     public float detectableDistance = 5.0f;
     public MonoBehaviour playerMovementScript;
     public MonoBehaviour cameraControllerScript;
-    [SerializeField] PostProcessVolume _volume;
+    [SerializeField] PostProcessVolume postProcess;
+    DepthOfField depthOfField;
+    //public Volume volume;
     [SerializeField] AudioSource audioSource;
     public bool lightEnabled = false;
 
@@ -19,7 +21,7 @@ public class ExamineSystem : MonoBehaviour
     public float rotationSpeed = 15;
     public float zoomSpeed = 1.5f;
     public float defaultZoomDistance = 1; //distance from the camera, to which objects will initially go to when picked up
-    float collisionCheckDistance = 0.4f;
+    float collisionCheckDistance = 50f;
     float zoomDistance; //stores dynamic zoom distance which changes due to player input (mouse scrolling)
     public Vector2 zoomMinMaxDefault = new Vector2(0.9f, 2.0f); //minimum and maximum zoom distance from defaultZoomDistance. (for zooming)
 
@@ -36,6 +38,8 @@ public class ExamineSystem : MonoBehaviour
     Light examineLight = null;
     Image cursorDot;
     Canvas detectCanvas, ExamineCanvas;
+
+    [SerializeField] GameObject handsGun;
     void Start()
     {
         cam = GetComponentInChildren<Camera>().transform;
@@ -47,6 +51,15 @@ public class ExamineSystem : MonoBehaviour
         detectCanvas = GameObject.Find("ESDetectCanvas").GetComponent<Canvas>();
         ExamineCanvas = GameObject.Find("ESExamineCanvas").GetComponent<Canvas>();
         cursorDotDefaultColor = cursorDot.color;
+
+        // volume = gameObject.GetComponent<Volume>();
+        // DepthOfField dof;
+        // if (volume.profile.TryGet<DepthOfField>(out dof))
+        // {
+        //     depthOfField = dof;
+        // }
+
+        depthOfField = postProcess.profile.GetSetting<DepthOfField>();
     }
 
     void Update()
@@ -81,6 +94,7 @@ public class ExamineSystem : MonoBehaviour
             float temp = zoomDistance;
             float input = Input.GetAxis("Mouse ScrollWheel");
             RaycastHit hit;
+
             if (Physics.Raycast(cam.position, detectedItem.position - cam.position, out hit, zoomDistance + input + collisionCheckDistance) && !hit.transform.IsChildOf(detectedItem)) //if new position would collide do this
             {
                 zoomDistance = Vector3.Distance(cam.position + cam.forward, hit.point); //sets zoom distance to the point where the collision was detected
@@ -94,7 +108,7 @@ public class ExamineSystem : MonoBehaviour
             detectedItem.position = Vector3.Lerp(detectedItem.position, cam.transform.position + cam.forward * zoomDistance, zoomSmoothness * Time.deltaTime); //smoothly zoom by moving an objects closers/farther from the camera
 
             //handle dynamic depth of field
-            _volume.profile.TryGetSettings<DepthOfField>(out var DOF);
+            postProcess.profile.TryGetSettings<DepthOfField>(out var DOF);
             DOF.focusDistance.value = Vector3.Distance(cam.position, detectedItem.position);
         }
     }
@@ -106,15 +120,17 @@ public class ExamineSystem : MonoBehaviour
         playerMovementScript.enabled = false;
         cameraControllerScript.enabled = false;
         LockCursor(false);
+        handsGun.SetActive(false);
 
         initialItemPosition = detectedItem.position;
         initialItemRotation = new Vector3(detectedItem.eulerAngles.x, detectedItem.eulerAngles.y, detectedItem.eulerAngles.z);
         zoomDistance = defaultZoomDistance;
-        cam.GetComponent<PostProcessVolume>().enabled = true;
 
         ItemInfo itemInfo = detectedItem.GetComponent<ItemInfo>();
 
         itemInfo.DisableColliders();
+
+        depthOfField.active = true;
 
         //Override default zoom limits if there are any
         Vector2 OverrideLimits = itemInfo.GetZoomLimits();
@@ -178,12 +194,14 @@ public class ExamineSystem : MonoBehaviour
 
         ExamineCanvas.enabled = false;
 
-        cam.GetComponent<PostProcessVolume>().enabled = false;
-        detectedItem.GetComponent<ItemInfo>().EnableColliders();
+        depthOfField.active = false;
 
+        detectedItem.GetComponent<ItemInfo>().EnableColliders();
+        
         playerMovementScript.enabled = true;
         cameraControllerScript.enabled = true;
         LockCursor(true);
+        handsGun.SetActive(true);
 
         if(examineLight) examineLight.enabled = false;
 
@@ -196,11 +214,15 @@ public class ExamineSystem : MonoBehaviour
 
 
     void DetectItem() {
+
         RaycastHit hit;
 
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, detectableDistance, layerMask))
         {
-            if (detectionStateChange) HandleDetectionUI(hit.transform.gameObject, true);
+            if (detectionStateChange) 
+            {
+                HandleDetectionUI(hit.transform.gameObject, true);
+            }
             DetectionState = true;
         }
         else
@@ -208,6 +230,8 @@ public class ExamineSystem : MonoBehaviour
             if (detectionStateChange) HandleDetectionUI(null, false);
             DetectionState = false;
         }
+    
+
     }
 
     void HandleDetectionUI(GameObject item, bool detected) {
@@ -227,7 +251,7 @@ public class ExamineSystem : MonoBehaviour
 
 
 
-    public bool DetectionState //keeps track of boolean value changes for optimal performance
+    private bool DetectionState //keeps track of boolean value changes for optimal performance
     {
         get { return detectionState; }
         set
@@ -246,7 +270,7 @@ public class ExamineSystem : MonoBehaviour
         }
     }
 
-    public bool ExamineState //keeps track of boolean value changes for optimal performance
+    private bool ExamineState //keeps track of boolean value changes for optimal performance
     {
         get { return examineState; }
         set

@@ -1,10 +1,10 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
-public class InteractionSystem : MonoBehaviour
+public class PadInteraction : MonoBehaviour
 {
 public float detectableDistance = 5.0f;
     public MonoBehaviour playerMovementScript;
@@ -13,26 +13,26 @@ public float detectableDistance = 5.0f;
     DepthOfField depthOfField;
     //public Volume volume;
     [SerializeField] AudioSource audioSource;
-    public bool lightEnabled = false;
 
     [SerializeField] Color cursorDotHighlighted = Color.red;
 
-    [HideInInspector]  public bool examineState = false; //can be used to check if an item is being examined
-
-    Transform detectedItem, cam;
+    Transform cam;
     LayerMask layerMask;
     Color cursorDotDefaultColor;
     bool detectionState = false;
     bool detectionStateChange = false;
+    Rigidbody[] rigidbodies; //stores rigid bodies of the examined item
+    GameObject placeHolder;
     Image cursorDot;
-    Canvas detectCanvas, InfoPadCanvas;
+    Canvas detectCanvas, ExamineCanvas;
     void Start()
     {
         cam = GetComponentInChildren<Camera>().transform;
-        layerMask = LayerMask.GetMask("Pad");
+        layerMask = LayerMask.GetMask("Examinable");
+
         cursorDot = GameObject.Find("crosshair").GetComponent<Image>();
         detectCanvas = GameObject.Find("ESDetectCanvas").GetComponent<Canvas>();
-        InfoPadCanvas = GameObject.Find("InfoPad").GetComponent<Canvas>();
+        ExamineCanvas = GameObject.Find("ESExamineCanvas").GetComponent<Canvas>();
         cursorDotDefaultColor = cursorDot.color;
 
         depthOfField = postProcess.profile.GetSetting<DepthOfField>();
@@ -40,13 +40,9 @@ public float detectableDistance = 5.0f;
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && DetectionState && !ExamineState)
+        if (Input.GetKeyDown(KeyCode.E) && DetectionState)
         {
             ExamineStateEnter();
-        }
-        else if(!ExamineState)
-        {
-            DetectItem(); //look for examinable items
         }
         else Examine();
     }
@@ -56,44 +52,24 @@ public float detectableDistance = 5.0f;
         {
             ExamineStateLeave();
         }
-        else {
-
-            //handle dynamic depth of field
-            postProcess.profile.TryGetSettings<DepthOfField>(out var DOF);
-            DOF.focusDistance.value = Vector3.Distance(cam.position, detectedItem.position);
-        }
     }
 
     void ExamineStateEnter() {
-
-        ExamineState = true;
 
         playerMovementScript.enabled = false;
         cameraControllerScript.enabled = false;
         LockCursor(false);
 
-
-        ItemInfo itemInfo = detectedItem.GetComponent<ItemInfo>();
-
         depthOfField.active = true;
 
-        
-        InfoPadCanvas.enabled = true;
+        ExamineCanvas.enabled = true;
 
-        if (itemInfo.GetAudioInfo())
-        {
-            audioSource.PlayOneShot(itemInfo.GetAudioInfo());
-        }
-
-        
     }
 
     void ExamineStateLeave() {
 
-        ExamineState = false;
 
-
-        InfoPadCanvas.enabled = false;
+        ExamineCanvas.enabled = false;
 
         depthOfField.active = false;
         
@@ -122,8 +98,6 @@ public float detectableDistance = 5.0f;
 
         if (detected && detectionStateChange)
         {
-            detectedItem = item.transform;  //store detected item reference
-
             cursorDot.color = cursorDotHighlighted;
             detectCanvas.enabled = true;
         }
@@ -150,28 +124,6 @@ public float detectableDistance = 5.0f;
             }
             else {
                 detectionStateChange = false;
-            }
-        }
-    }
-
-    public bool ExamineState //keeps track of boolean value changes for optimal performance
-    {
-        get { return examineState; }
-        set
-        {
-            if (value == examineState)
-                return;
-
-            examineState = value; 
-            if (examineState)
-            {
-                cursorDot.enabled = false;
-                detectCanvas.enabled = false;
-            }
-            else
-            {
-                cursorDot.enabled = true;
-                detectCanvas.enabled = true;
             }
         }
     }
