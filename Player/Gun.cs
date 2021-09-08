@@ -15,19 +15,22 @@ public class Gun : MonoBehaviour
     [SerializeField] private float rayObstacleSphereRadius = 0.1f;
     [SerializeField] private LayerMask obstacleLayers = ~0;
     private bool m_hitWall;
+    [SerializeField] Animator anim;
 
-
-    // Update is called once per frame
     void Update()
     {
         if(Input.GetButtonDown("Fire1") && Time.time >= nextTimeToFire){
             nextTimeToFire = Time.time + 1f;
             Shoot();
+            anim.SetBool("shooting", true);
+            }
+            else
+            {
+            anim.SetBool("shooting", false);
+            }
         }
 
-    }
-
-    void Shoot(){
+    public void Shoot(){
 
         muzzleFlash.Play();
 

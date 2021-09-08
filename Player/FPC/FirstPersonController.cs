@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-//using UnityStandardAssets.Characters.FirstPerson;
-
 
 
     [RequireComponent(typeof(CharacterController))]
@@ -118,6 +116,8 @@ using UnityEngine;
                      private float m_inputVectorMagnitude;
                      private float m_smoothInputVectorMagnitude;
             #endregion
+
+        [SerializeField] Animator anim;
         
         #endregion
 
@@ -160,18 +160,19 @@ using UnityEngine;
 
                     m_previouslyGrounded = m_isGrounded;
                 }
+
+
+        if(Input.GetKey(KeyCode.W))
+        {
+            anim.SetBool("isWalking", true);
+            anim.SetBool("isIdle", false);
+        } else {
+            anim.SetBool("isWalking", false);
+            anim.SetBool("isIdle", true);
+        }
+        //GameObject.Find("SM_Wep_Shotgun_01").GetComponent<Gun>().Shoot();
             }
 
-            /*
-            
-                private void OnDrawGizmos()
-                {
-                    Gizmos.color = Color.yellow;
-                    Gizmos.DrawWireSphere((transform.position + m_characterController.center) - Vector3.up * m_finalRayLength, raySphereRadius);
-                }
-            
-             */
-            
         #endregion
 
         #region Custom Methods

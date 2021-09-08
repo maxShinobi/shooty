@@ -52,13 +52,6 @@ public class ExamineSystem : MonoBehaviour
         ExamineCanvas = GameObject.Find("ESExamineCanvas").GetComponent<Canvas>();
         cursorDotDefaultColor = cursorDot.color;
 
-        // volume = gameObject.GetComponent<Volume>();
-        // DepthOfField dof;
-        // if (volume.profile.TryGet<DepthOfField>(out dof))
-        // {
-        //     depthOfField = dof;
-        // }
-
         depthOfField = postProcess.profile.GetSetting<DepthOfField>();
     }
 
