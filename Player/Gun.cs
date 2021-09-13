@@ -6,7 +6,7 @@ public class Gun : MonoBehaviour
     [SerializeField] float range = 100f;
     [SerializeField] Camera fpsCam;
     [SerializeField] ParticleSystem muzzleFlash;
-    private float nextTimeToFire = 2f;
+    private float nextTimeToFire = 3f;
 
     [SerializeField] private CharacterController m_characterController;
     [SerializeField] private MovementInputData movementInputData = null;
