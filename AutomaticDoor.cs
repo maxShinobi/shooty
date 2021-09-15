@@ -12,7 +12,7 @@ public class AutomaticDoor : MonoBehaviour
 
     void Start()
     {
-        doorAnim = AutoDoor.GetComponent<Animator >();
+        doorAnim = AutoDoor.GetComponent<Animator>();
     }
 
     void OnTriggerEnter(Collider coll)

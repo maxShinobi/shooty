@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
     public float distanceToChase = 10f, distanceToLose = 15f, distanceToStop = 2f;
-
+    [SerializeField] float moveSpeed;
+    [SerializeField] CharacterController player;
     private Vector3 targetPoint;
     private Vector3 startPoint;
 
@@ -18,16 +20,18 @@ public class Enemy : MonoBehaviour
 
     private bool chasing;
     private bool wasShot;
+    private bool dead;
 
     void Start()
     {
         startPoint = transform.position;
+        agent.speed = moveSpeed;
     }
 
 
     void Update()
     {
-        targetPoint = PlayerController.instance.transform.position;
+        targetPoint = player.transform.position;
         targetPoint.y = transform.position.y;
 
         if (!chasing)
@@ -46,23 +50,17 @@ public class Enemy : MonoBehaviour
                     agent.destination = startPoint;
                 }
             }
-
-            if(agent.remainingDistance < .25f)
-            {
-                anim.SetBool("isMoving", false);
-            } else
-            {
-                anim.SetBool("isMoving", true);
-            }
         }
         else
         {
             if (Vector3.Distance(transform.position, targetPoint) > distanceToStop)
             {
                 agent.destination = targetPoint;
+                anim.SetBool("isMoving", true);
             } else
             {
                 agent.destination = transform.position;
+                anim.SetBool("isMoving", false);
             }
 
             if(Vector3.Distance(transform.position, targetPoint) > distanceToLose)
@@ -70,27 +68,32 @@ public class Enemy : MonoBehaviour
                 if (!wasShot)
                 {
                     chasing = false;
-
-
                     chaseCounter = keepChasingTime;
                 }
             } else
             {
                 wasShot = false;
             }
-                anim.SetBool("isMoving", false);
+            }
+
+            if(dead == true)
+            {
+                agent.isStopped = true;
             }
         }
 
     public void TakeDamage(float amount){
+        dead = true;
         health -= amount;
         if (health <= 0f)
         {
-            Die();
+            StartCoroutine(Die());
         }
     }
 
-    void Die(){
+    IEnumerator Die(){
+        anim.SetBool("shot", true);
+        yield return new WaitForSeconds(10);
         Destroy(gameObject);
     }
 }
