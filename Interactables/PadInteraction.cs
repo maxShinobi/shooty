@@ -9,7 +9,7 @@ public class PadInteraction : MonoBehaviour
 public float detectableDistance = 5.0f;
     public MonoBehaviour playerMovementScript;
     public MonoBehaviour cameraControllerScript;
-    [SerializeField] PostProcessVolume postProcess;
+    [SerializeField] PostProcessVolume postProcess = null;
     DepthOfField depthOfField;
     //public Volume volume;
     [SerializeField] AudioSource audioSource;

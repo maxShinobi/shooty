@@ -5,12 +5,14 @@ using System.Collections;
 public class Enemy : MonoBehaviour
 {
     public float distanceToChase = 10f, distanceToLose = 15f, distanceToStop = 2f;
-    [SerializeField] float moveSpeed;
-    [SerializeField] CharacterController player;
+    [SerializeField] float moveSpeed = default;
+    [SerializeField] CharacterController player = null;
     private Vector3 targetPoint;
     private Vector3 startPoint;
 
     public NavMeshAgent agent;
+
+    [SerializeField] Collider boxCollider = null;
 
     public float keepChasingTime = 5f;
     private float chaseCounter;
@@ -93,6 +95,7 @@ public class Enemy : MonoBehaviour
 
     IEnumerator Die(){
         anim.SetBool("shot", true);
+        boxCollider.enabled = false;
         yield return new WaitForSeconds(10);
         Destroy(gameObject);
     }

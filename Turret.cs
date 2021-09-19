@@ -19,23 +19,23 @@ public class Turret : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if(Vector3.Distance(transform.position, PlayerController.instance.transform.position) < rangeToTargetPlayer)
-        {
-            transform.LookAt(PlayerController.instance.transform.position + new Vector3(0f, 1.2f, 0f));
+    // void Update()
+    // {
+    //     if(Vector3.Distance(transform.position, PlayerController.instance.transform.position) < rangeToTargetPlayer)
+    //     {
+    //         transform.LookAt(PlayerController.instance.transform.position + new Vector3(0f, 1.2f, 0f));
 
-            shotCounter -= Time.deltaTime;
+    //         shotCounter -= Time.deltaTime;
 
-            if(shotCounter <= 0)
-            {
-                Instantiate(bullet, firepoint.position, firepoint.rotation);
-                Instantiate(laserEffect, firepoint.position, firepoint.rotation);
-                shotCounter = timeBetweenShots;
-            }
-        } else
-        {
-            shotCounter = timeBetweenShots;
-        }
-    }
+    //         if(shotCounter <= 0)
+    //         {
+    //             Instantiate(bullet, firepoint.position, firepoint.rotation);
+    //             Instantiate(laserEffect, firepoint.position, firepoint.rotation);
+    //             shotCounter = timeBetweenShots;
+    //         }
+    //     } else
+    //     {
+    //         shotCounter = timeBetweenShots;
+    //     }
+    // }
 }

@@ -117,7 +117,7 @@ using UnityEngine;
                      private float m_smoothInputVectorMagnitude;
             #endregion
 
-        [SerializeField] Animator anim;
+        [SerializeField] Animator anim = null;
         
         #endregion
 
@@ -152,7 +152,6 @@ using UnityEngine;
 
                     // Handle Player Movement, Gravity, Jump, Crouch etc.
                     HandleRunFOV();
-                    HandleCameraSway();
                     HandleLanding();
 
                     ApplyGravity();
@@ -377,11 +376,6 @@ using UnityEngine;
 
             #region Locomotion Apply Methods
 
-                protected virtual void HandleCameraSway()
-                {
-                   // m_cameraController.HandleSway(m_smoothInputVector,movementInputData.InputVector.x);
-                }
-
                 protected virtual void HandleRunFOV()
                 {
                     if(movementInputData.HasInput && m_isGrounded  && !m_hitWall)
@@ -389,13 +383,11 @@ using UnityEngine;
                         if(movementInputData.RunClicked && CanRun())
                         {
                             m_duringRunAnimation = true;
-                            m_cameraController.ChangeRunFOV(false);
                         }
 
                         if(movementInputData.IsRunning && CanRun() && !m_duringRunAnimation )
                         {
                             m_duringRunAnimation = true;
-                            m_cameraController.ChangeRunFOV(false);
                         }
                     }
 
@@ -404,7 +396,6 @@ using UnityEngine;
                         if(m_duringRunAnimation)
                         {
                             m_duringRunAnimation = false;
-                            m_cameraController.ChangeRunFOV(true);
                         }
                     }
                 }

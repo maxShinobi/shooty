@@ -9,10 +9,10 @@ public class ExamineSystem : MonoBehaviour
     public float detectableDistance = 5.0f;
     public MonoBehaviour playerMovementScript;
     public MonoBehaviour cameraControllerScript;
-    [SerializeField] PostProcessVolume postProcess;
+    [SerializeField] PostProcessVolume postProcess = null;
     DepthOfField depthOfField;
     //public Volume volume;
-    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioSource audioSource = null;
     public bool lightEnabled = false;
 
     [SerializeField] Color cursorDotHighlighted = Color.red;
@@ -39,7 +39,7 @@ public class ExamineSystem : MonoBehaviour
     Image cursorDot;
     Canvas detectCanvas, ExamineCanvas;
 
-    [SerializeField] GameObject handsGun;
+    [SerializeField] GameObject handsGun = null;
     void Start()
     {
         cam = GetComponentInChildren<Camera>().transform;

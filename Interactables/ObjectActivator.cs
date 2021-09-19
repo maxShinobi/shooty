@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class ObjectActivator : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer image;
-    [SerializeField] GameObject Player;
+    [SerializeField] private SpriteRenderer image = null;
+    [SerializeField] GameObject Player = null;
     float distance;
 
     void Start()

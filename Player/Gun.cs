@@ -4,18 +4,18 @@ public class Gun : MonoBehaviour
 {
     [SerializeField] float damage = 10f;
     [SerializeField] float range = 100f;
-    [SerializeField] Camera fpsCam;
-    [SerializeField] ParticleSystem muzzleFlash;
+    [SerializeField] Camera fpsCam = null;
+    [SerializeField] ParticleSystem muzzleFlash = null;
     private float nextTimeToFire = 3f;
 
-    [SerializeField] private CharacterController m_characterController;
+    [SerializeField] private CharacterController m_characterController = null;
     [SerializeField] private MovementInputData movementInputData = null;
     private Vector3 m_finalMoveDir;
     [SerializeField] private float rayObstacleLength = 0.1f;
     [SerializeField] private float rayObstacleSphereRadius = 0.1f;
     [SerializeField] private LayerMask obstacleLayers = ~0;
     private bool m_hitWall;
-    [SerializeField] Animator anim;
+    [SerializeField] Animator anim = null;
 
     void Update()
     {

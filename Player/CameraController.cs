@@ -27,9 +27,6 @@
                 #region Components                    
                     private Transform m_pitchTranform;
                     private Camera m_cam;
-
-                    //public CameraZoom cameraZoom;
-                    public CameraSwaying cameraSway;
                 #endregion
             #endregion
 
@@ -38,7 +35,6 @@
             {
                 GetComponents();
                 InitValues();
-                InitComponents();
                 ChangeCursorState();
             }
 
@@ -47,7 +43,6 @@
                 CalculateRotation();
                 SmoothRotation();
                 ApplyRotation();
-                HandleZoom();
             }
         #endregion
 
@@ -63,13 +58,6 @@
                 m_yaw = transform.eulerAngles.y;
                 m_desiredYaw = m_yaw;
             }
-
-            void InitComponents()
-            {
-                //cameraZoom.Init(m_cam, camInputData);
-                //cameraSway.Init(m_cam.transform);
-            }
-
             void CalculateRotation()
             {
                 m_desiredYaw += camInputData.InputVector.x * sensitivity.x * Time.deltaTime;
@@ -88,23 +76,6 @@
             {
                 transform.eulerAngles = new Vector3(0f,m_yaw,0f);
                 m_pitchTranform.localEulerAngles = new Vector3(m_pitch,0f,0f);
-            }
-
-            public void HandleSway(Vector3 _inputVector,float _rawXInput)
-            {
-                //cameraSway.SwayPlayer(_inputVector,_rawXInput);
-            }
-
-            void HandleZoom()
-            {
-                //if(camInputData.ZoomClicked || camInputData.ZoomReleased)
-                    //cameraZoom.ChangeFOV(this);
-
-            }
-
-            public void ChangeRunFOV(bool _returning)
-            {
-                //cameraZoom.ChangeRunFOV(_returning,this);
             }
 
             void ChangeCursorState()
