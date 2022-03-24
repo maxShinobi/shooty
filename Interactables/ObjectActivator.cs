@@ -1,0 +1,33 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ObjectActivator : MonoBehaviour
+{
+    [SerializeField] private SpriteRenderer image = null;
+    [SerializeField] GameObject Player = null;
+    float distance;
+
+    void Start()
+    {
+        image.enabled = false;
+    }
+    
+    void Update()
+    {
+        distance = Vector3.Distance(gameObject.transform.position, Player.transform.position);
+
+        if(distance < 8)
+        {
+            image.enabled = true;
+        } else {
+            image.enabled = false;
+        }
+
+        if(image.enabled == true)
+        {
+            transform.LookAt(Player.transform.position + new Vector3(0f, 1f, 0f));;
+        }
+    }
+}
